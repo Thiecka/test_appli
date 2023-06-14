@@ -1,0 +1,38 @@
+name: testBuild
+
+on:
+  push:
+    branches:
+      - main
+
+
+jobs:
+  build:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: npm install
+
+
+
+#installer le pkg
+      - name: installer pkg
+        run: npm i pkg
+
+# creer le binaire    
+# assurez-vous que votre configuration pkg est correctement définie dans votre package.json ex "bin": "test.js"   
+      - name: Creation du binaire
+        run: npx pkg .
+
+# créer une version du build en tant que fichier d'artefact. 
+#Cela vous permettra de télécharger le build généré à partir des Actions GitHub. 
+
+      - name: Create build artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: build
+          path: ./  
